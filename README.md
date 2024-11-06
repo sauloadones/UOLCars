@@ -199,7 +199,7 @@ GET users?name=John&email=john.doe@example.com&excluded=false&sort=name&page=1&p
     }
   ]
 }
-```
+
 
 ### GET cars/:{id}
 **Descrição**: Busca um carro por ID.
