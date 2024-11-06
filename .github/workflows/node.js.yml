@@ -32,5 +32,6 @@ jobs:
           echo "DB_USERNAME=${{ secrets.DB_USERNAME }}" >> .env
           echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
           echo "DB_NAME=${{ secrets.DB_NAME }}" >> .env
+          echo "PORT=${{ secrets.PORT}}" >> .env
     # - run: npm run build --if-present
     # - run: npm test
