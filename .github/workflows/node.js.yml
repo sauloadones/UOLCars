@@ -33,5 +33,6 @@ jobs:
           echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
           echo "DB_NAME=${{ secrets.DB_NAME }}" >> .env
           echo "PORT=${{ secrets.PORT}}" >> .env
+    - run: pm2 restart BACKENDAPI
     # - run: npm run build --if-present
     # - run: npm test
