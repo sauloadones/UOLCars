@@ -36,7 +36,6 @@ jobs:
           echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
           echo "DB_NAME=${{ secrets.DB_NAME }}" >> .env
           echo "PORT=${{ secrets.PORT}}" >> .env
-    - run: npm run migration:generate
     - run: npm run migration:run
     - run: tsc
     - run: pm2 restart my-api
