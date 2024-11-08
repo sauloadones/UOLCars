@@ -28,7 +28,8 @@ jobs:
     - run: npm ci
     - run: npm install
     - run: npm install -g typescript
-
+    - run: npm run migration:generate
+    - run: num run migration:run
     - run: tsc
     - run: |
           echo "DB_PORT=${{ secrets.DB_PORT }}" >> .env
