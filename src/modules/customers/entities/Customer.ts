@@ -30,7 +30,7 @@ class Customer implements ICustomer{
   @Column({ type: 'varchar', length: 20 })
   phone!: string;
 
-  @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt!: Date;
 
   @DeleteDateColumn({ type: 'timestamp', nullable: true })
