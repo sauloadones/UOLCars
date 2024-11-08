@@ -17,7 +17,7 @@ export default class Order implements IOrder {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
-  @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   dateRequest!: Date;
 
   @Column('enum', {
