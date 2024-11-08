@@ -15,7 +15,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [18.x, 22.x]
+        node-version: [22.x]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
@@ -28,6 +28,7 @@ jobs:
     - run: npm ci
     - run: npm install
     - run: npm install -g typescript
+   
     - run: |
           echo "DB_PORT=${{ secrets.DB_PORT }}" >> .env
           echo "DB_HOST=${{ secrets.DB_HOST }}" >> .env
