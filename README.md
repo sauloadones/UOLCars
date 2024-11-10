@@ -622,14 +622,17 @@ Um middleware valida o token e adiciona o usuário à request (req.user), conten
    Para não ter que usar a porta da nossa api na url de acesso criaremos uma proxy que ao passar pelo {ip}/{rota} ele retornara o caminho da  prota que esta definada na nossa api 
     - Para isso instalaremos o nginx na nossa Instancia Publica
     - Instale o nginx
+
     ```bash
       sudo apt install nginx
     ```
     - Navegue ate o direito do nginx e acesse o arquivo default
+
     ```bash
       cd /etc/nginx/sites-available && sudo nano default
     ```
     - Apos isso voce pode pagar as configurações dentro do arquivo e copiar a seguinte configuração
+    
     ```bash
     # Root directory for your website files
     root /var/www/html;
