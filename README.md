@@ -494,15 +494,23 @@ Um middleware valida o token e adiciona o usuário à request (req.user), conten
   ```bash
     ssh -i "{oseuarquivodechaveprivada.pem}" {usuario}@{seuipprivado}"
   ```
-### Downloads na EC2 Publica ###
+### Downloads na EC2 Publica###
   - Instalaremos o node.js
-  - E o MySQL
+  - PM2
 
 ### Node JS ###
   - Para instalar o nodejs usaremos o seguinte comando
   ```bash
     apt install nodejs
   ```
+### PM2 ###
+  - Ele servira para manter nosso serviço alive. no caso executar nossa api
+  - Para instalar o PM2
+  ```bash
+    apt install nodejs
+  ```
+
+### Downloads na EC2 Privada ###
 ## MySQL
   - Para instalar o MySQL siga o passo passo
   ```bash
