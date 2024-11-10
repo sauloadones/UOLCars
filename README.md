@@ -618,7 +618,7 @@ Um middleware valida o token e adiciona o usuário à request (req.user), conten
   
   
   
-  #### Extra ####
+  ## Extra
    Para não ter que usar a porta da nossa api na url de acesso criaremos uma proxy que ao passar pelo {ip}/{rota} ele retornara o caminho da  prota que esta definada na nossa api 
     - Para isso instalaremos o nginx na nossa Instancia Publica
     - Instale o nginx
@@ -628,38 +628,41 @@ Um middleware valida o token e adiciona o usuário à request (req.user), conten
     ```
     
     - Navegue ate o direito do nginx e acesse o arquivo default
+    
     ```bash
       cd /etc/nginx/sites-available && sudo nano default
     ```
     - Apos isso voce pode pagar as configurações dentro do arquivo e copiar a seguinte configuração
+    
     ```bash
-    Root directory for your website files
-    root /var/www/html;
+      Root directory for your website files
+      root /var/www/html;
 
-   
-    index index.html index.htm index.nginx-debian.html;
-    server {
-    # Default server name (you can add a specific domain here if needed)
-    server_name _;
+    
+      index index.html index.htm index.nginx-debian.html;
+      server {
+      # Default server name (you can add a specific domain here if needed)
+      server_name _;
 
-    # Main location block for serving files
-
-
-    # API proxy block
-    location / {
-        # Rewrite requests starting with /api/... to /api/
-        rewrite ^/api/(.*)$ /api/$1 break;
+      # Main location block for serving files
 
 
-        proxy_pass http://localhost:{portadasuaapi};
+      # API proxy block
+      location / {
+          # Rewrite requests starting with /api/... to /api/
+          rewrite ^/api/(.*)$ /api/$1 break;
 
-        # Pass necessary headers to the backend server
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-      }
-    } 
+
+          proxy_pass http://localhost:{portadasuaapi};
+
+          # Pass necessary headers to the backend server
+          proxy_set_header Host $host;
+          proxy_set_header X-Real-IP $remote_addr;
+          proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+          proxy_set_header X-Forwarded-Proto $scheme;
+          }
+        }
+
     ```
   -- Não esqueça de mudar para sua porta da api
 
