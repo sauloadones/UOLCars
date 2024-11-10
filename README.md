@@ -509,7 +509,7 @@ Um middleware valida o token e adiciona o usuário à request (req.user), conten
   ```bash
     apt install pm2
   ```
-  
+
 ### Downloads na EC2 Privada ###
 ## MySQL
   - Para instalar o MySQL siga o passo passo
@@ -601,7 +601,7 @@ Um middleware valida o token e adiciona o usuário à request (req.user), conten
             echo "PORT=${{ secrets.PORT}}" >> .env
       - run: npm run migration:run
       - run: tsc
-      - run: pm2 restart my-api
+      - run: pm2 restart ecosystem.config.js
   ```
   -- Esses echo são para o nosso arquivo .env que sra criado automaticamente
   -- Para ele funcionar precisamos criar nossas variaveis de sistemas
