@@ -619,9 +619,11 @@ Um middleware valida o token e adiciona o usuário à request (req.user), conten
   
   
   ## Extra
-   Para não ter que usar a porta da nossa api na url de acesso criaremos uma proxy que ao passar pelo {ip}/{rota} ele retornara o caminho da  prota que esta definada na nossa api 
-    - Para isso instalaremos o nginx na nossa Instancia Publica
-    - Instale o nginx
+   Para não ter que usar a porta da nossa api na url de acesso criaremos uma proxy que ao passar pelo ip/rota ele retornara o caminho da  prota que esta definada na nossa api 
+
+  - Para isso instalaremos o nginx na nossa Instancia Publica
+    
+  - Instale o nginx
 
       sudo apt install nginx
 
