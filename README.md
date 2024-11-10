@@ -620,7 +620,7 @@ Um middleware valida o token e adiciona o usuário à request (req.user), conten
   
   ## Extra
    Para não ter que usar a porta da nossa api na url de acesso criaremos uma proxy que ao passar pelo ip/rota ele retornara o caminho da  prota que esta definada na nossa api 
-   
+
   - Para isso instalaremos o nginx na nossa Instancia Publica
     
   - Instale o nginx
@@ -663,6 +663,10 @@ Um middleware valida o token e adiciona o usuário à request (req.user), conten
         }
       ```
   - Não esqueça de mudar para sua porta da api
+  - Com isso não precisaremos utilizar mais usar 
+    - http:/{ipdaapi}:{porta}/{rota}, 
+    - utilizaremos a rota padrão http://{ipdaapi}/rota
+  
 
   ## Links
 
