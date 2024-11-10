@@ -624,14 +624,15 @@ Um middleware valida o token e adiciona o usuário à request (req.user), conten
   - Para isso instalaremos o nginx na nossa Instancia Publica
     
   - Instale o nginx
-    ```bash
-      sudo apt install nginx
-    ```
+  ```bash
+    sudo apt install nginx
+   ```
   - Navegue ate o direito do nginx e acesse o arquivo default
+  - E cole o seguinte conteudo
   ```bash  
    cd /etc/nginx/sites-available && sudo nano default
   ```  
-    - Apos isso voce pode pagar as configurações dentro do arquivo e copiar a seguinte configuração
+
     
     ```bash
       Root directory for your website files
