@@ -603,16 +603,16 @@ Um middleware valida o token e adiciona o usuário à request (req.user), conten
       - run: tsc
       - run: pm2 restart ecosystem.config.js
   ```
-  -- Esses echo são para o nosso arquivo .env que sra criado automaticamente
-  -- Para ele funcionar precisamos criar nossas variaveis de sistemas
-  -- Podemos acessa-las em
+  - Esses echo são para o nosso arquivo .env que sra criado automaticamente
+  - Para ele funcionar precisamos criar nossas variaveis de sistemas
+  - Podemos acessa-las em
     - Settings
       - Secrets and Variables
         - Actions
           - New repository secrets
             - Name: "Aqui sera passado o nome da secrets"
             - secret: "Aqui sera o resultado da variavel, exemplo: {A porta da sua API}"
-  -- Feita a configuração podemos fechar essa etapa do action. cada mudança no seu repositorio ou commit passado para ele,
+  - Feita a configuração podemos fechar essa etapa do action. cada mudança no seu repositorio ou commit passado para ele,
   ele executará uma nova action que irá ser redirecionada para sua EC2 publica
 
   
@@ -660,9 +660,8 @@ Um middleware valida o token e adiciona o usuário à request (req.user), conten
           proxy_set_header X-Forwarded-Proto $scheme;
           }
         }
-
-    ```
-  -- Não esqueça de mudar para sua porta da api
+      ```
+  - Não esqueça de mudar para sua porta da api
 
   ## Links
 
