@@ -620,7 +620,7 @@ Um middleware valida o token e adiciona o usuário à request (req.user), conten
   
   ## Extra
    Para não ter que usar a porta da nossa api na url de acesso criaremos uma proxy que ao passar pelo ip/rota ele retornara o caminho da  prota que esta definada na nossa api 
-
+   
   - Para isso instalaremos o nginx na nossa Instancia Publica
     
   - Instale o nginx
@@ -641,21 +641,20 @@ Um middleware valida o token e adiciona o usuário à request (req.user), conten
     
       index index.html index.htm index.nginx-debian.html;
       server {
-      # Default server name (you can add a specific domain here if needed)
+    
       server_name _;
 
-      # Main location block for serving files
+      
 
 
-      # API proxy block
       location / {
-          # Rewrite requests starting with /api/... to /api/
+        
           rewrite ^/api/(.*)$ /api/$1 break;
 
 
           proxy_pass http://localhost:{portadasuaapi};
 
-          # Pass necessary headers to the backend server
+       
           proxy_set_header Host $host;
           proxy_set_header X-Real-IP $remote_addr;
           proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
