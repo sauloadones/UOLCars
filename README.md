@@ -503,39 +503,45 @@ Um middleware valida o token e adiciona o usuário à request (req.user), conten
   ```bash
     apt install nodejs
   ```
-### MYSQL ###
-    - Na EC2 Privada instalaremos o MYSQL Server
+## MySQL
+  - Para instalar o MySQL siga o passo passo
+  ```bash
+    apt install MySQL
+  ```
+  - Depois precisaremos baixar o apt-config do mysql
+  ```bash
+     wget https://dev.mysql.com/get/mysql-apt-config_0.8.22-1_all.deb
+  ```
+  - Apos isso usaremos o dpkg para desempacotar o arquivo
+  ```bash
+    sudo dpkg -i mysql-apt-config*
+  ```
+  - Apos a instalação do Mysql server precisamos acessar o banco para criar nosso banco de dados
     
-    ```bash
-      apt install gnupg -y
-    ```
-    ```bash
-      wget https://dev.mysql.com/get/mysql-apt-config_0.8.22-1_all.deb
-    ```
-    ```bash
-      sudo dpkg -i mysql-apt-config*
-    ```
-    ```bash
-      sudo apt install mysql-server
-    ```
-    
-    - Apos a instalação do Mysql server precisamos acessar o banco para criar nosso banco de dados
-    
-    ```bash
-      mysql -u root -p
-    ```
+  ```bash
+    mysql -u root -p
+  ```
+  - Na EC2 Privada instalaremos o MYSQL Server
 
     ```bash
       CREATE USER 'username'@'localhost' IDENTIFIED BY 'password';
-     ```
-     ```bash
+    ```
+    ```bash
       GRANT ALL PRIVILEGES ON database_name.* TO 'username'@'localhost';
-     ```
+    ```
     ```bash
       FLUSH PRIVILEGES;
     ```
-    -- Lembre-se esses dados que forem colocados aqui devem se de acordo com os valores da variaveis da sua infraestrutura se estiver usando o banco na mesma maquina do que a api voce pode deixar localhost se não tem que ser mudado para o ip da maquina da EC2 publica, no caso aonde esta hospedado sua api
-
+    ```bash
+      CREATE USER 'username'@'localhost' IDENTIFIED BY 'password';
+    ```
+    ```bash
+      GRANT ALL PRIVILEGES ON database_name.* TO 'username'@'localhost';
+    ```
+    ```bash
+      FLUSH PRIVILEGES;
+    ```
+     - Lembre-se esses dados que forem colocados aqui devem se de acordo com os valores da variaveis da sua infraestrutura se estiver usando o banco na mesma maquina do que a api voce pode deixar localhost se não tem que ser mudado para o ip da maquina da EC2 publica, no caso aonde esta hospedado sua api
 ## GitHub Actions
 
   - Essa ferramenta será muito importante para que possamos dar o deploy automatico
