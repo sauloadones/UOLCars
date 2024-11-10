@@ -507,9 +507,9 @@ Um middleware valida o token e adiciona o usuário à request (req.user), conten
   - Ele servira para manter nosso serviço alive. no caso executar nossa api
   - Para instalar o PM2
   ```bash
-    apt install nodejs
+    apt install pm2
   ```
-
+  
 ### Downloads na EC2 Privada ###
 ## MySQL
   - Para instalar o MySQL siga o passo passo
