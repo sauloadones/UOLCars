@@ -13,13 +13,6 @@ A RESTful API projetada para o gerenciamento da locação de carros. Permite o g
 
 ### Passos de Instalação
 
-**Clone o repositório**
-
-```bash
-git clone https://github.com/Bernardosds/CarRentalAPI.git
-cd CarRentalAPI
-```
-
 **Instale as Dependências** 
 
 ```bash
@@ -432,3 +425,233 @@ Um middleware valida o token e adiciona o usuário à request (req.user), conten
 **Organização de tasks**: Para vizualizar os dados do Trello, solicite acesso através do link:<br>
 
 **Trello**: https://trello.com/b/09SpYG44/squad-coringa
+
+# Migração com a AWS
+
+## Começando
+
+### Pré-requisitos
+
+- GitHub Actions
+- MYSQL.
+- PM2 
+- NGINX
+- AWS EC2
+- AWS VPC
+
+### Passos de Instalação
+
+**Configuração de VPC**
+
+- Crie uma VPC
+- Configure 2 Subredes
+  - 1 Subnet para o range de ips publico
+  - 1 Subnet para o range de ips privado
+- Configure 2 Rotas
+  - 1 Rota para a rede publica
+  - 1 Rota para a rede Privada
+- Configure Gateway para Internet
+  - O gateway para internet estará associado com a rota publica, pois assim a maquina terá acesso a internet
+- Configure NAT Gateway(Tradutor de IP Privado para seu IP Publico)
+  - Aqui que entraremos no quesito chave da situação ja como temos 2 redes 1 delas sendo privada, e outra publica, vamos necessitar do NAT para que a as maquinas na subnet privada tenham acesso a rede.
+
+
+**Crie a instancia da EC2**
+  
+  - Crie 2 EC2 Instance
+  - Uma das EC2 instance tera o ip elastico publico, ela que será a maquina que vai prover o serviço da API estara associada a subnet publica.
+  - A outra instanca tera o ip privado, essa maquina sera responsavel pelo BD "banco de dados", associe ela a subnet privada
+  - No par de chaves, crie seu novo par de chaves de preferencia crie uma pem key, a chave ppk é usada para acesso via PuTTy, mas utilizaremos o acesso remoto ssh,
+  - Na configuração de rede click em editar e nos selecionaremos nossa VPC e a subrede alinhada a cada EC2, la selecionaremos a vpc que nos criamos e tambem iremos determina quais  maquinas irão receber ip publico ou não,
+  - Como determinado na nossa estrutura de rede, a primeira EC2 Recebera ip publico, a segunda não
+  - Por questão de segurança na regras de grupo para o ssh coloque a origem para somente o ip publico da sua maquina, assim
+  somente quem estiver na sua maquina conseguira acessar.
+  - Tambem adicione uma regra para TIPO HTTP, com origem para QUALQUER LUGAR, na porta 80, essa regra que permitira o acesso de outras pessoas a nossa API
+  - Apos essas configurações 
+  - Voce ja pode executar as instancias
+  - Apos o termino da criação da instancia entre na EC2 publica via ssh, para facilitar o acesso, esteja no mesmo diretorio da sua pemkey que voce instalou, ;
+  - Acesse algum terminal de controle pode ser via vscode ou o proprio cmd, voce ira precisar da chave que voce criou na aws para seguir os proximos passos lembre de deixar ela no direito em que esta dando o ssh
+
+  ```bash
+    ssh -i "{oseuarquivodechaveprivada.pem}" {usuario}@{seuippublco}"
+  ```
+
+  - EC2 Privada
+  - Aqui faremos quase os mesmo passo a passo da Instancia publica, na parte de configuração de rede iremos escolher a mesma vpc
+  - Mas na sub-rede sera definida a privada
+  - Na politica de grupo, voce abilitara o ssh com tipo personalizado e colocaram a o endereço da sua rede global, o que foi definido na sua VPC
+  - e tambem habilitaremos a porta 3306{MySQL} para a nossa rede principal
+  - Voce pode criar outra chave ou usar a mesma mas aqui sera diferente para acessar a rede privada teremos que pegar o conteudo que esta dentro da nossa chave de acesso, e copiar dentro de um arquivo da nossa Instancia Publica, voce pode colocar qualquer nome a esse arquivo faremos isso com o seguinte comando
+  ```bash
+    touch {nomedoarquivo}
+  ```
+  - Utilize o comando nano para acessar o arquivo:
+  ```bash
+    sudo nano {nomedoarquivo}
+  ```
+  - Apos isso copie o conteudo da chave
+  - Finalizado esse processo utilizaremos o mesmo comando anteriormente mas agora com o ip privado da instancia que esta na subrede privada
+  ```bash
+    ssh -i "{oseuarquivodechaveprivada.pem}" {usuario}@{seuipprivado}"
+  ```
+### Downloads na EC2 Publica ###
+  - Instalaremos o node.js
+  - E o MySQL
+
+### Node JS ###
+  - Para instalar o nodejs usaremos o seguinte comando
+  ```bash
+    apt install nodejs
+  ```
+### MYSQL ###
+    - Na EC2 Privada instalaremos o MYSQL Server
+    
+    ```bash
+      apt install gnupg -y
+    ```
+    ```bash
+      wget https://dev.mysql.com/get/mysql-apt-config_0.8.22-1_all.deb
+    ```
+    ```bash
+      sudo dpkg -i mysql-apt-config*
+    ```
+    ```bash
+      sudo apt install mysql-server
+    ```
+    
+    - Apos a instalação do Mysql server precisamos acessar o banco para criar nosso banco de dados
+    
+    ```bash
+      mysql -u root -p
+    ```
+
+    ```bash
+      CREATE USER 'username'@'localhost' IDENTIFIED BY 'password';
+     ```
+     ```bash
+      GRANT ALL PRIVILEGES ON database_name.* TO 'username'@'localhost';
+     ```
+    ```bash
+      FLUSH PRIVILEGES;
+    ```
+    -- Lembre-se esses dados que forem colocados aqui devem se de acordo com os valores da variaveis da sua infraestrutura se estiver usando o banco na mesma maquina do que a api voce pode deixar localhost se não tem que ser mudado para o ip da maquina da EC2 publica, no caso aonde esta hospedado sua api
+
+## GitHub Actions
+
+  - Essa ferramenta será muito importante para que possamos dar o deploy automatico
+
+  - Primeiramente configuraremos a Actions Runner
+    - Abra seu repositorio da sua API
+      - Em settings
+        - Actions
+          - Runners
+            - Click em New self-hosted runner
+    - Ele informara um passo a passo a ser seguido, nos usaremos o linux, siga  o passo a passo na sua instancia do EC2 publica
+  
+  - Depois precisaremos configurar o arquivo do node.js.yml
+  ```bash
+    name: Node.js CI/CD
+
+    on:
+      push:
+        branches: [ "main" ]
+
+
+    jobs:
+      build:
+
+        runs-on: self-hosted
+
+        strategy:
+          matrix:
+            node-version: [22.x]
+            # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+
+        steps:
+        - uses: actions/checkout@v4
+        - name: Use Node.js ${{ matrix.node-version }}
+          uses: actions/setup-node@v4
+          with:
+            node-version: ${{ matrix.node-version }}
+            cache: 'npm'
+      - run: npm ci
+      - run: npm install
+      - run: npm install -g typescript
+    
+      - run: |
+            echo "DB_PORT=${{ secrets.DB_PORT }}" >> .env
+            echo "DB_HOST=${{ secrets.DB_HOST }}" >> .env
+            echo "DB_USER=${{ secrets.DB_USERNAME }}" >> .env
+            echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
+            echo "DB_NAME=${{ secrets.DB_NAME }}" >> .env
+            echo "PORT=${{ secrets.PORT}}" >> .env
+      - run: npm run migration:run
+      - run: tsc
+      - run: pm2 restart my-api
+  ```
+  -- Esses echo são para o nosso arquivo .env que sra criado automaticamente
+  -- Para ele funcionar precisamos criar nossas variaveis de sistemas
+  -- Podemos acessa-las em
+    - Settings
+      - Secrets and Variables
+        - Actions
+          - New repository secrets
+            - Name: "Aqui sera passado o nome da secrets"
+            - secret: "Aqui sera o resultado da variavel, exemplo: {A porta da sua API}"
+  -- Feita a configuração podemos fechar essa etapa do action. cada mudança no seu repositorio ou commit passado para ele,
+  ele executará uma nova action que irá ser redirecionada para sua EC2 publica
+
+  
+  
+  
+  #### Extra ####
+   Para não ter que usar a porta da nossa api na url de acesso criaremos uma proxy que ao passar pelo {ip}/{rota} ele retornara o caminho da  prota que esta definada na nossa api 
+    - Para isso instalaremos o nginx na nossa Instancia Publica
+    - Instale o nginx
+    ```bash
+      sudo apt install nginx
+    ```
+    - Navegue ate o direito do nginx e acesse o arquivo default
+    ```bash
+      cd /etc/nginx/sites-available && sudo nano default
+    ```
+    - Apos isso voce pode pagar as configurações dentro do arquivo e copiar a seguinte configuração
+    ```bash
+    # Root directory for your website files
+    root /var/www/html;
+
+   
+    index index.html index.htm index.nginx-debian.html;
+    server {
+    # Default server name (you can add a specific domain here if needed)
+    server_name _;
+
+    # Main location block for serving files
+
+
+    # API proxy block
+    location / {
+        # Rewrite requests starting with /api/... to /api/
+        rewrite ^/api/(.*)$ /api/$1 break;
+
+
+        proxy_pass http://localhost:{portadasuaapi};
+
+        # Pass necessary headers to the backend server
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+      }
+    } 
+    ```
+  -- Não esqueça de mudar para sua porta da api
+
+
+
+
+
+   
+
+
+
