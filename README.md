@@ -653,6 +653,14 @@ Um middleware valida o token e adiciona o usuário à request (req.user), conten
     ```
   -- Não esqueça de mudar para sua porta da api
 
+  ## Links
+
+  - Segue link para o site do swagger:
+  **Site Swagger**: https://uolbucketprojectaws.s3.us-east-2.amazonaws.com/index1.html
+  - Link para o ReadME
+  **Site ReadME**: https://uolbucketprojectaws.s3.us-east-2.amazonaws.com/index.html
+  - Acesso a API Publica criada
+  **Site API Publica**: http://3.22.77.30/
 
 
 
