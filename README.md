@@ -457,43 +457,89 @@ Um middleware valida o token e adiciona o usuário à request (req.user), conten
 
 
 **Crie a instancia da EC2**
-  
-  - Crie 2 EC2 Instance
-  - Uma das EC2 instance tera o ip elastico publico, ela que será a maquina que vai prover o serviço da API estara associada a subnet publica.
-  - A outra instanca tera o ip privado, essa maquina sera responsavel pelo BD "banco de dados", associe ela a subnet privada
-  - No par de chaves, crie seu novo par de chaves de preferencia crie uma pem key, a chave ppk é usada para acesso via PuTTy, mas utilizaremos o acesso remoto ssh,
-  - Na configuração de rede click em editar e nos selecionaremos nossa VPC e a subrede alinhada a cada EC2, la selecionaremos a vpc que nos criamos e tambem iremos determina quais  maquinas irão receber ip publico ou não,
-  - Como determinado na nossa estrutura de rede, a primeira EC2 Recebera ip publico, a segunda não
-  - Por questão de segurança na regras de grupo para o ssh coloque a origem para somente o ip publico da sua maquina, assim
-  somente quem estiver na sua maquina conseguira acessar.
-  - Tambem adicione uma regra para TIPO HTTP, com origem para QUALQUER LUGAR, na porta 80, essa regra que permitira o acesso de outras pessoas a nossa API
-  - Apos essas configurações 
-  - Voce ja pode executar as instancias
-  - Apos o termino da criação da instancia entre na EC2 publica via ssh, para facilitar o acesso, esteja no mesmo diretorio da sua pemkey que voce instalou, ;
-  - Acesse algum terminal de controle pode ser via vscode ou o proprio cmd, voce ira precisar da chave que voce criou na aws para seguir os proximos passos lembre de deixar ela no direito em que esta dando o ssh
-
-  ```bash
-    ssh -i "{oseuarquivodechaveprivada.pem}" {usuario}@{seuippublco}"
-  ```
-
-  - EC2 Privada
-  - Aqui faremos quase os mesmo passo a passo da Instancia publica, na parte de configuração de rede iremos escolher a mesma vpc
-  - Mas na sub-rede sera definida a privada
-  - Na politica de grupo, voce abilitara o ssh com tipo personalizado e colocaram a o endereço da sua rede global, o que foi definido na sua VPC
-  - e tambem habilitaremos a porta 3306{MySQL} para a nossa rede principal
-  - Voce pode criar outra chave ou usar a mesma mas aqui sera diferente para acessar a rede privada teremos que pegar o conteudo que esta dentro da nossa chave de acesso, e copiar dentro de um arquivo da nossa Instancia Publica, voce pode colocar qualquer nome a esse arquivo faremos isso com o seguinte comando
-  ```bash
-    touch {nomedoarquivo}
-  ```
-  - Utilize o comando nano para acessar o arquivo:
-  ```bash
-    sudo nano {nomedoarquivo}
-  ```
-  - Apos isso copie o conteudo da chave
-  - Finalizado esse processo utilizaremos o mesmo comando anteriormente mas agora com o ip privado da instancia que esta na subrede privada
-  ```bash
-    ssh -i "{oseuarquivodechaveprivada.pem}" {usuario}@{seuipprivado}"
-  ```
+  - EC2
+    - Pesquise na barra de pesquisa da AWS EC2
+      - Apos abrir click em instancias(em execução)
+        - Executar instancias
+          - Tags:
+            - Chave: Name | Valor: LINUXWEBSERVER-2 | Tipos de Recurso: Instancias e Voluems
+            - Chave: Project | Valor: Unknown | Tipos de Recurso: Instancia e Volumes
+            - Chave: Cost | Valor: Unknown |  Tipos de Recurso: Instancia e Volumes
+          
+          - Imagem:
+            - Debian
+            - Arquitetura: Free Padrão
+          
+          - Tipo de Instancia:
+            - Padrão
+          
+          - Par de Chaves:
+            - Criar novo par de chaves
+              - Nome do par de chaves: "O nome do seu par de chaves"
+              - Tipo de par de chaves: RSA
+              - Formato de arquivo de chave privada: PEM
+                - Click em criar par de chaves
+          - Configurações de Rede
+            - Editar
+              - VPC
+                - Selecione a vpc que criou
+                - Sub-rede: Selecione a publica
+                - Atribuir IP público automaticamente: Habilitar
+          - Criar grupo de segurança:
+            - Regras do grupo de segurança de entrada
+              - Tipo: SSH  | Protocolo: TCP | Intervalo de Portas: 22 | Tipo de origem: Meu IP | Origem: Seu IP | Descrição: SEU SSH
+              - Tipo: HTTP |  Protocolo: TCP | Intervalo de Portas: 80 | Tipo de origem:  Qualquer Lugar | Origem: 0.0.0.0/0 | Descrição: porta web/api
+          - Executar instancias
+          - Ao executar instancia abrar a aba de acesso remoto nesta aba voce precisara abrir um cmd eu recomendo o terminal do vscode
+            - Apos abrir va ate o repositorio em que esta a chave que voce criou e fez o download:
+          
+          ```bash
+            ssh -i "{oseuarquivodechaveprivada.pem}" {usuario}@{seuippublco}"
+          ```
+   - EC2 Privada
+    - Pesquise na barra de pesquisa da AWS EC2
+      - Apos abrir click em instancias(em execução)
+        - Executar instancias
+          - Tags:
+            - Chave: Name | Valor: LINUXWEBSERVER-2 | Tipos de Recurso: Instancias e Voluems
+            - Chave: Project | Valor: Unknown | Tipos de Recurso: Instancia e Volumes
+            - Chave: Cost | Valor: Unknown |  Tipos de Recurso: Instancia e Volumes
+          
+          - Imagem:
+            - Debian
+            - Arquitetura: Free Padrão
+          
+          - Tipo de Instancia:
+            - Padrão
+          
+          - Par de Chaves:
+            - Criar novo par de chaves
+              - Nome do par de chaves: "O nome do seu par de chaves"
+              - Tipo de par de chaves: RSA
+              - Formato de arquivo de chave privada: PEM
+                - Click em criar par de chaves
+          - Configurações de Rede
+            - Editar
+              - VPC
+                - Selecione a vpc que criou
+                - Sub-rede: Selecione a subrede privada
+                - Atribuir IP público automaticamente: Desabilitar
+          - Criar grupo de segurança:
+            - Regras do grupo de segurança de entrada
+              - Tipo: SSH  | Protocolo: TCP | Intervalo de Portas: 22 | Tipo de origem: Personalizado | Origem: IP da Sua Rede Privada | Descrição: SEU SSH
+              - Tipo: MySQL |  Protocolo: TCP | Intervalo de Portas: 3306 | Tipo de origem:  Personalizada | Origem: IP Da sua rede local| Descrição: Banco de dados mysql
+          - Executar instancias
+          - Para executar essa instancia voce precisa estar com acesso na maquina da EC2 publica
+            - Copie o conteudo do arquivo da sua chave que voce criou e instalou
+            - Crie um arquivo na EC2 Publica
+               ```bash
+                  touch {nomedoarquivo}
+                ```
+            - Agora cole o conteudo do arquivo da sua chave dentro desse arquivo que voce criou na EC2 Publica
+            - Apos isso use
+               ```bash
+                  ssh -i "{oseuarquivodechaveprivada.pem}" {usuario}@{seuipprivado}"
+               ```
 ### Downloads na EC2 Publica###
   - Instalaremos o node.js
   - PM2
