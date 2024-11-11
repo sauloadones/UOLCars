@@ -458,7 +458,7 @@ Um middleware valida o token e adiciona o usuário à request (req.user), conten
 
 **Crie a instancia da EC2**
   # EC2
-  ## Instancia Publica
+  - Instancia Publica
     - Pesquise na barra de pesquisa da AWS EC2
       - Apos abrir click em instancias(em execução)
         - Executar instancias
@@ -497,7 +497,7 @@ Um middleware valida o token e adiciona o usuário à request (req.user), conten
           ```bash
             ssh -i "{oseuarquivodechaveprivada.pem}" {usuario}@{seuippublco}"
           ```
-   ## Instancia Privada
+  - Instancia Privada
     - Pesquise na barra de pesquisa da AWS EC2
       - Apos abrir click em instancias(em execução)
         - Executar instancias
