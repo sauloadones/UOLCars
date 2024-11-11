@@ -635,38 +635,148 @@ Um middleware valida o token e adiciona o usuário à request (req.user), conten
 
     
     ```bash
-      Root directory for your website files
-      root /var/www/html;
+          Root directory for your website files
+          root /var/www/html;
 
-    
-      index index.html index.htm index.nginx-debian.html;
-      server {
-    
-      server_name _;
-
-      
-
-
-      location / {
         
-          rewrite ^/api/(.*)$ /api/$1 break;
+          index index.html index.htm index.nginx-debian.html;
+          server {
+        
+          server_name _;
+
+          
 
 
-          proxy_pass http://localhost:{portadasuaapi};
+          location / {
+            
+              rewrite ^/api/(.*)$ /api/$1 break;
 
-       
-          proxy_set_header Host $host;
-          proxy_set_header X-Real-IP $remote_addr;
-          proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-          proxy_set_header X-Forwarded-Proto $scheme;
-          }
-        }
+
+              proxy_pass http://localhost:{portadasuaapi};
+
+          
+              proxy_set_header Host $host;
+              proxy_set_header X-Real-IP $remote_addr;
+              proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+              proxy_set_header X-Forwarded-Proto $scheme;
+              }
+            }
       ```
   - Não esqueça de mudar para sua porta da api
   - Com isso não precisaremos utilizar mais usar 
     - http:/{ipdaapi}:{porta}/{rota}, 
     - utilizaremos a rota padrão http://{ipdaapi}/rota
   
+  ## S3
+
+  - Acesse o S3 na Barra de Pesquisa da AWS
+    - Criar Bucket
+      - Insira o nome da sua Bucket
+      - Propriedade da Bucket: ACL Desabilitada
+      - Configurações de Bloqueio de Acesso Publico: Desmarque a opção
+      - Versionamento do Bucket: Ativar
+      - Tags: Nenhuma 
+      - Criptografia: Criptografia do Lado do Servidor com chaves gerenciadas do Amazon S3
+      - Chave da Bucket: Ativar
+
+  - Depois dessas configuraçoes click em criar a bucket, ao finalizar se redirecione a sua bucket e abra ela.
+    - Click em Carregar
+      - Adicionar Arquivos ou pasta
+        - Carregar
+        ```bash
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+              <meta charset="UTF-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <title>Swagger UI</title>
+              <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.1.0/swagger-ui.css" />
+          </head>
+          <body>
+              <div id="swagger-ui"></div>
+              <script src="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.1.0/swagger-ui-bundle.js"></script>
+              <script src="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.1.0/swagger-ui-standalone-preset.js"></script>
+              <script>
+                  window.onload = function() {
+                      const ui = SwaggerUIBundle({
+                          url:  "https://{linkdabucket}/{nomedoarquivoswagger}",
+                          dom_id: '#swagger-ui',
+                          presets: [
+                              SwaggerUIBundle.presets.apis,
+                              SwaggerUIStandalonePreset
+                          ],
+                          layout: "StandaloneLayout"
+                      });
+                      window.ui = ui;
+                  };
+              </script>
+          </body>
+          </html>
+        ```
+
+
+  - Ao finalizar o carregamento do arquivo index, adicione o seu arquivo swagger
+  - Depois va em propriedades
+    - Hospedagem de site estatico
+      - Editar
+        - Hospedagem de Site Estatico: Ativar
+        - Tipo de Hospedagem: Hospedar Site Estatico
+        - Documento de Indice: Index.html
+        - Documento de Erro: Deixe vazio
+  - Permissões
+     - Bloquear Acesso ao Publico
+      - Editar
+        - Desmarque a opção
+          - Salvar Alterações
+    
+     - Politica do Bucket
+      - Editar
+        ```bash
+          {
+            "Version": "2012-10-17",
+            "Statement": [
+              {
+                "Sid": "PublicReadGetObject",
+                "Effect": "Allow",
+                "Principal": "*",
+                "Action": "s3:GetObject",
+                "Resource": "arn:aws:s3:::uolbucketprojectaws/*"
+              }
+            ]
+          }
+        ```
+          - Salvar Alterações
+      
+      - Lista de Controle de Acesos(ACL)
+        - Editar
+          - Todos(acesso publico)
+            - Marque Leitura
+      
+      - Compartilhamento de recursos de origem cruzada (CORS)
+        - Editar
+          ```bash
+                      [
+                    {
+                    "AllowedHeaders": [
+                        "*"
+                    ],
+                    "AllowedMethods": [
+                        "GET"
+                    ],
+                    "AllowedOrigins": [
+                        "*"
+                    ],
+                    "ExposeHeaders": []
+                }
+            ]
+          ```
+    - Ao finalizar esse processo voce pode fazer o mesmo com o readme converte o markdown para html usando
+    ```bash
+        pandoc README.md -f markdown -t html -s -o index.html --metadata title="AWS"      
+    ```
+    
+    - Depois que o index html for gerado adicione ele na bucket e tambem estará habilitado o acesso ao site.
+
 
   ## Links
 
